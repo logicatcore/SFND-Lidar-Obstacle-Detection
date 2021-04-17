@@ -6,6 +6,7 @@
 #include <chrono>
 #include <string>
 #include "kdtree.h"
+#include <unordered_set>
 
 // Arguments:
 // window is the region to draw box around
@@ -75,15 +76,32 @@ void render2DTree(Node* node, pcl::visualization::PCLVisualizer::Ptr& viewer, Bo
 
 }
 
-std::vector<std::vector<int>> euclideanCluster(const std::vector<std::vector<float>>& points, KdTree* tree, float distanceTol)
+void proximity(const std::vector<std::vector<float>> &pts, std::vector<int> &cluster, std::vector<bool> &Pstatus, KdTree *tree, uint id, float *tol)
 {
+	Pstatus[id] = true;
+	cluster.push_back(id);
+	std::vector<int> nearbyPoints = tree->search(pts[id], *tol);
+	for (int &nearbyPtId: nearbyPoints){
+		if (!Pstatus[nearbyPtId]){
+			proximity(pts, cluster, Pstatus, tree, nearbyPtId, tol);
+		}
+	}
+}
 
-	// TODO: Fill out this function to return list of indices for each cluster
-
+std::vector<std::vector<int>> euclideanCluster(const std::vector<std::vector<float>> &points, KdTree* tree, float distanceTol)
+{
 	std::vector<std::vector<int>> clusters;
- 
+	std::vector<bool> processedStatus(points.size(), false);
+	for (uint id = 0; id < points.size(); id++)
+	{
+		if (!processedStatus[id])
+		{
+			std::vector<int> cluster;
+			proximity(points, cluster, processedStatus, tree, id, &distanceTol);
+			clusters.emplace_back(cluster);
+		}
+	}
 	return clusters;
-
 }
 
 int main ()
