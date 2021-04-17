@@ -14,12 +14,12 @@ pcl::visualization::PCLVisualizer::Ptr initScene(Box window, int zoom)
 {
 	pcl::visualization::PCLVisualizer::Ptr viewer(new pcl::visualization::PCLVisualizer ("2D Viewer"));
 	viewer->setBackgroundColor (0, 0, 0);
-  	viewer->initCameraParameters();
-  	viewer->setCameraPosition(0, 0, zoom, 0, 1, 0);
-  	viewer->addCoordinateSystem (1.0);
+	viewer->initCameraParameters();
+	viewer->setCameraPosition(0, 0, zoom, 0, 1, 0);
+	viewer->addCoordinateSystem (1.0);
 
-  	viewer->addCube(window.x_min, window.x_max, window.y_min, window.y_max, 0, 0, 1, 1, 1, "window");
-  	return viewer;
+	viewer->addCube(window.x_min, window.x_max, window.y_min, window.y_max, 0, 0, 1, 1, 1, "window");
+	return viewer;
 }
 
 pcl::PointCloud<pcl::PointXYZ>::Ptr CreateData(std::vector<std::vector<float>> points)

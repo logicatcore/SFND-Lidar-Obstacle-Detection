@@ -25,7 +25,7 @@ struct Node
 
 struct KdTree
 {
-	Node* root;
+	Node *root;
 
 	KdTree()
 	: root(NULL)
@@ -36,11 +36,26 @@ struct KdTree
 		delete root;
 	}
 
+	void place(Node **n, std::vector<float> &point, int &id, uint depth) 
+	{
+		if(*n == NULL)
+		{
+			*n = new Node(point, id);
+		}
+		else if(point[(int)(depth % 2)] < (*n)->point[(int)(depth % 2)])
+		{
+			place(&(*n)->left, point, id, ++depth);
+		}
+		else
+		{
+			place(&(*n)->right, point, id, ++depth);
+		}
+	}
+
 	void insert(std::vector<float> point, int id)
 	{
-		// TODO: Fill in this function to insert a new point into the tree
 		// the function should create a new node and place correctly with in the root 
-
+		place(&root, point, id, 0);
 	}
 
 	// return a list of point ids in the tree that are within distance of target
