@@ -44,11 +44,11 @@ struct KdTree
 		}
 		else if(point[(int)(depth % 2)] < (*n)->point[(int)(depth % 2)])
 		{
-			place(&(*n)->left, point, id, ++depth);
+			place(&((*n)->left), point, id, ++depth);
 		}
 		else
 		{
-			place(&(*n)->right, point, id, ++depth);
+			place(&((*n)->right), point, id, ++depth);
 		}
 	}
 
