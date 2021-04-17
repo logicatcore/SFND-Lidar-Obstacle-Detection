@@ -60,7 +60,6 @@ struct KdTree
 
 	void digThrough(Node **n, std::vector<float> *target, std::vector<int> *ids, float *tol, uint depth)
 	{
-		uint cd = depth % 2;
 		if(*n != NULL){
 			if(abs((*target)[0] - (*n)->point[0]) <= *tol & abs((*target)[1] - (*n)->point[1]) <= *tol)
 			{
@@ -68,7 +67,8 @@ struct KdTree
 				if (dist < *tol)
 					(*ids).push_back((*n)->id);
 			}
-			
+
+			uint cd = depth % 2;
 			if(((*target)[cd] - *tol) < (*n)->point[cd])
 			{
 				digThrough(&((*n)->left), target, ids, tol, ++depth);
