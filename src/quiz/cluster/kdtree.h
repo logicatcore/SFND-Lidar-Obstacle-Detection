@@ -5,14 +5,19 @@
 
 
 // Structure to represent node of kd tree
+template <typename PointT>
 struct Node
 {
-	std::vector<float> point;
+	std::vector<PointT> point;
 	int id;
-	Node* left;
-	Node* right;
+	Node<PointT>* left;
+	Node<PointT>* right;
 
 	Node(std::vector<float> arr, int setId)
+	:	point(arr), id(setId), left(NULL), right(NULL)
+	{}
+
+	Node(PointT arr, int setId)
 	:	point(arr), id(setId), left(NULL), right(NULL)
 	{}
 
@@ -26,7 +31,7 @@ struct Node
 template <typename PointT>
 struct KdTree
 {
-	Node *root;
+	Node<PointT> *root;
 
 	KdTree(unsigned short d)
 	: D(d), root(NULL)
@@ -37,11 +42,11 @@ struct KdTree
 		delete root;
 	}
 
-	void place(Node **n, std::vector<PointT> &point, int &id, uint depth) 
+	void place(Node<PointT> **n, std::vector<PointT> &point, int &id, uint depth) 
 	{
 		if(*n == NULL)
 		{
-			*n = new Node(point, id);
+			*n = new Node<PointT>(point, id);
 		}
 		else if(point[(int)(depth % D)] < (*n)->point[(int)(depth % D)])
 		{
@@ -59,7 +64,13 @@ struct KdTree
 		place(&root, point, id, 0);
 	}
 
-	void digThrough(Node **n, std::vector<PointT> *target, std::vector<int> *ids, float *tol, uint depth)
+	void insert(PointT point, int id)
+	{
+		// the function should create a new node and place correctly with in the root 
+		place(&root, point, id, 0);
+	}
+
+	void digThrough(Node<PointT> **n, std::vector<PointT> *target, std::vector<int> *ids, float *tol, uint depth)
 	{
 		if(*n != NULL){
 			if(abs((*target)[0] - (*n)->point[0]) <= *tol & abs((*target)[1] - (*n)->point[1]) <= *tol)
@@ -83,6 +94,14 @@ struct KdTree
 
 	// return a list of point ids in the tree that are within distance of target
 	std::vector<int> search(std::vector<PointT> target, float distanceTol)
+	{
+		std::vector<int> ids;
+		digThrough(&root, &target, &ids, &distanceTol, 0);
+		return ids;
+	}
+
+	// return a list of point ids in the tree that are within distance of target
+	std::vector<int> search(PointT target, float distanceTol)
 	{
 		std::vector<int> ids;
 		digThrough(&root, &target, &ids, &distanceTol, 0);
