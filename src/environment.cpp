@@ -80,7 +80,13 @@ void cityBlock(pcl::visualization::PCLVisualizer::Ptr& viewer)
 
   ProcessPointClouds<pcl::PointXYZI>* pointProcessorI = new ProcessPointClouds<pcl::PointXYZI>();
   pcl::PointCloud<pcl::PointXYZI>::Ptr inputCloud = pointProcessorI->loadPcd("../src/sensors/data/pcd/data_1/0000000000.pcd");
-  renderPointCloud(viewer,inputCloud,"inputCloud");
+  //   renderPointCloud(viewer,inputCloud,"inputCloud");
+
+  // 20 meters behind, 40 meters ahead
+  // 10 meters either side of the vehicle
+  // from the mounting position of sensor 3 meters downwards and 4 meters upwards (big trucks)
+  pcl::PointCloud<pcl::PointXYZI>::Ptr filterCloud = pointProcessorI->FilterCloud(inputCloud, 0.3 , Eigen::Vector4f (-20, -10, -3, 1), Eigen::Vector4f ( 40, 10, 3, 1));
+  renderPointCloud(viewer, filterCloud, "filterCloud");
 }
 
 
@@ -114,7 +120,7 @@ int main (int argc, char** argv)
     std::cout << "starting enviroment" << std::endl;
 
     pcl::visualization::PCLVisualizer::Ptr viewer (new pcl::visualization::PCLVisualizer ("3D Viewer"));
-    CameraAngle setAngle = XY;
+    CameraAngle setAngle = TopDown;
     initCamera(setAngle, viewer);
     cityBlock(viewer);
 
