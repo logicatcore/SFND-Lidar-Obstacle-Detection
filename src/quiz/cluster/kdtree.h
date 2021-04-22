@@ -23,6 +23,7 @@ struct Node
 	}
 };
 
+template <typename PointT>
 struct KdTree
 {
 	Node *root;
@@ -36,7 +37,7 @@ struct KdTree
 		delete root;
 	}
 
-	void place(Node **n, std::vector<float> &point, int &id, uint depth) 
+	void place(Node **n, std::vector<PointT> &point, int &id, uint depth) 
 	{
 		if(*n == NULL)
 		{
@@ -52,13 +53,13 @@ struct KdTree
 		}
 	}
 
-	void insert(std::vector<float> point, int id)
+	void insert(std::vector<PointT> point, int id)
 	{
 		// the function should create a new node and place correctly with in the root 
 		place(&root, point, id, 0);
 	}
 
-	void digThrough(Node **n, std::vector<float> *target, std::vector<int> *ids, float *tol, uint depth)
+	void digThrough(Node **n, std::vector<PointT> *target, std::vector<int> *ids, float *tol, uint depth)
 	{
 		if(*n != NULL){
 			if(abs((*target)[0] - (*n)->point[0]) <= *tol & abs((*target)[1] - (*n)->point[1]) <= *tol)
@@ -81,7 +82,7 @@ struct KdTree
 	}
 
 	// return a list of point ids in the tree that are within distance of target
-	std::vector<int> search(std::vector<float> target, float distanceTol)
+	std::vector<int> search(std::vector<PointT> target, float distanceTol)
 	{
 		std::vector<int> ids;
 		digThrough(&root, &target, &ids, &distanceTol, 0);

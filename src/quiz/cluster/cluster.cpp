@@ -76,7 +76,7 @@ void render2DTree(Node* node, pcl::visualization::PCLVisualizer::Ptr& viewer, Bo
 
 }
 
-void proximity(const std::vector<std::vector<float>> &pts, std::vector<int> &cluster, std::vector<bool> &Pstatus, KdTree *tree, uint id, float *tol)
+void proximity(const std::vector<std::vector<float>> &pts, std::vector<int> &cluster, std::vector<bool> &Pstatus, KdTree<float> *tree, uint id, float *tol)
 {
 	Pstatus[id] = true;
 	cluster.push_back(id);
@@ -88,7 +88,7 @@ void proximity(const std::vector<std::vector<float>> &pts, std::vector<int> &clu
 	}
 }
 
-std::vector<std::vector<int>> euclideanCluster(const std::vector<std::vector<float>> &points, KdTree* tree, float distanceTol)
+std::vector<std::vector<int>> euclideanCluster(const std::vector<std::vector<float>> &points, KdTree<float>  *tree, float distanceTol)
 {
 	std::vector<std::vector<int>> clusters;
 	std::vector<bool> processedStatus(points.size(), false);
@@ -122,7 +122,7 @@ int main ()
 	//std::vector<std::vector<float>> points = { {-6.2,7}, {-6.3,8.4}, {-5.2,7.1}, {-5.7,6.3} };
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = CreateData(points);
 
-	KdTree* tree = new KdTree(2); // pass the dimension information
+	KdTree<float>* tree = new KdTree<float>(2); // pass the dimension information
   
     for (int i=0; i<points.size(); i++) 
     	tree->insert(points[i],i); 
