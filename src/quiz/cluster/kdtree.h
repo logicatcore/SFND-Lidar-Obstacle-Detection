@@ -27,8 +27,8 @@ struct KdTree
 {
 	Node *root;
 
-	KdTree()
-	: root(NULL)
+	KdTree(unsigned short d)
+	: D(d), root(NULL)
 	{}
 
 	~KdTree()
@@ -42,7 +42,7 @@ struct KdTree
 		{
 			*n = new Node(point, id);
 		}
-		else if(point[(int)(depth % 2)] < (*n)->point[(int)(depth % 2)])
+		else if(point[(int)(depth % D)] < (*n)->point[(int)(depth % D)])
 		{
 			place(&((*n)->left), point, id, ++depth);
 		}
@@ -68,7 +68,7 @@ struct KdTree
 					(*ids).push_back((*n)->id);
 			}
 
-			uint cd = depth % 2;
+			uint cd = depth % D;
 			if(((*target)[cd] - *tol) < (*n)->point[cd])
 			{
 				digThrough(&((*n)->left), target, ids, tol, ++depth);
@@ -79,6 +79,7 @@ struct KdTree
 			}
 		}
 	}
+
 	// return a list of point ids in the tree that are within distance of target
 	std::vector<int> search(std::vector<float> target, float distanceTol)
 	{
@@ -86,6 +87,9 @@ struct KdTree
 		digThrough(&root, &target, &ids, &distanceTol, 0);
 		return ids;
 	}
+
+	private:
+		const unsigned short D{0};
 };
 
 
