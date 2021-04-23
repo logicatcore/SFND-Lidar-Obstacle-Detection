@@ -83,14 +83,14 @@ void cityBlock(pcl::visualization::PCLVisualizer::Ptr& viewer, ProcessPointCloud
   // 20 meters behind, 40 meters ahead
   // 6 meters either side of the vehicle
   // from the mounting position of sensor 3 meters downwards and 4 meters upwards (big trucks)
-  pcl::PointCloud<pcl::PointXYZI>::Ptr filterCloud = pointProcessorI->FilterCloud(inputCloud, 0.3 , Eigen::Vector4f (-20, -6, -3, 1), Eigen::Vector4f ( 40, 6, 3, 1));
+  pcl::PointCloud<pcl::PointXYZI>::Ptr filterCloud = pointProcessorI->FilterCloud(inputCloud, 0.2 , Eigen::Vector4f (-20, -6, -3, 1), Eigen::Vector4f ( 40, 7, 3, 1));
  
   // Segment the filtered cloud
   std::pair<pcl::PointCloud<pcl::PointXYZI>::Ptr, pcl::PointCloud<pcl::PointXYZI>::Ptr> segmentCloud = RansacPlane<pcl::PointXYZI>(filterCloud, 10, 0.2);
-//   renderPointCloud(viewer,segmentCloud.first,"obstCloud",Color(1,0,0));
+  // renderPointCloud(viewer,segmentCloud.first,"obstCloud",Color(1,0,0));
   renderPointCloud(viewer,segmentCloud.second,"planeCloud",Color(0,1,0));
   
-  std::vector<pcl::PointCloud<pcl::PointXYZI>::Ptr> cloudClusters = pointProcessorI->ClusteringFromScratch(segmentCloud.first, 0.5, 10, 200);  // cluster tolerance >(must) voxel grid size
+  std::vector<pcl::PointCloud<pcl::PointXYZI>::Ptr> cloudClusters = pointProcessorI->ClusteringFromScratch(segmentCloud.first, 1.2, 10, 400);  // cluster tolerance >(must) voxel grid size
   int clusterId = 0;
   std::vector<Color> colors = {Color(1,0,0), Color(0,1,1), Color(0,0,1)};  
   for(pcl::PointCloud<pcl::PointXYZI>::Ptr cluster : cloudClusters)
@@ -159,6 +159,6 @@ int main (int argc, char** argv)
     if(streamIterator == stream.end())
         streamIterator = stream.begin();
 
-    viewer->spinOnce ();
+    viewer->spinOnce(100);
     }
 }
