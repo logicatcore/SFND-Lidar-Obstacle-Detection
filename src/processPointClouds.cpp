@@ -121,6 +121,43 @@ std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT
     return segResult;
 }
 
+template <typename PointT>
+void ProcessPointClouds<PointT>::Proximity(const typename pcl::PointCloud<PointT>::Ptr cloud, typename pcl::PointCloud<PointT>::Ptr cluster, std::vector<bool> &Pstatus, KdTree<PointT> *tree, uint id, float *tol)
+{
+	Pstatus[id] = true;
+	cluster->push_back(cloud->points[id]);
+	std::vector<int> nearbyPoints = tree->search(cloud->points[id], *tol);
+	for (int &nearbyPtId: nearbyPoints){
+		if (!Pstatus[nearbyPtId]){
+			Proximity(cloud, cluster, Pstatus, tree, nearbyPtId, tol);
+		}
+	}
+}
+
+template<typename PointT>
+std::vector<typename pcl::PointCloud<PointT>::Ptr> ProcessPointClouds<PointT>::ClusteringFromScratch(typename pcl::PointCloud<PointT>::Ptr cloud, float clusterTolerance, int minSize, int maxSize)
+{
+    std::vector<typename pcl::PointCloud<PointT>::Ptr> clusters;
+    std::vector<bool> processedStatus(cloud->points.size(), false);
+    // create a KD-tree
+    KdTree<PointT>* tree = new KdTree<PointT>(3); // get the dimension from the 0th point
+  
+    for (int i=0; i<cloud->points.size(); i++) 
+    	tree->insert(cloud->points[i],i); 
+
+    for (uint id = 0; id < cloud->points.size(); id++)
+    {
+        if (!processedStatus[id])
+        {
+            typename pcl::PointCloud<PointT>::Ptr cluster(new pcl::PointCloud<PointT>);
+            Proximity(cloud, cluster, processedStatus, tree, id, &clusterTolerance);
+            if (cluster->size() >= minSize & cluster->size() <= maxSize)
+                clusters.emplace_back(cluster);
+        }
+    }
+
+    return clusters;
+}
 
 template<typename PointT>
 std::vector<typename pcl::PointCloud<PointT>::Ptr> ProcessPointClouds<PointT>::Clustering(typename pcl::PointCloud<PointT>::Ptr cloud, float clusterTolerance, int minSize, int maxSize)
