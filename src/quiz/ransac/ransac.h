@@ -66,7 +66,8 @@ std::unordered_set<int> Ransac(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, int ma
 {
 	std::unordered_set<int> inliersResult;
 	srand(time(NULL));
-	int idx1{0}, idx2{0}, maxIdx{cloud->points.size()};
+	int idx1{0}, idx2{0};
+	long unsigned int maxIdx{cloud->points.size()};
 	float A{0}, B{0}, C{0}, denom{0};
 	
 	// For max iterations 
@@ -101,7 +102,8 @@ std::unordered_set<int> RansacPlaneIdx(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud
 {
 	std::unordered_set<int> inliersResult;
 	srand(time(NULL));
-	int idx1{0}, idx2{0}, idx3{0}, maxIdx{cloud->points.size()};
+	int idx1{0}, idx2{0}, idx3{0};
+	long unsigned int maxIdx{cloud->points.size()};
 	float A{0}, B{0}, C{0}, D{0}, denom{0};
 	float x1, x2, x3, y1, y2, y3, z1, z2, z3;
 
@@ -157,7 +159,8 @@ std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT
   typename pcl::PointCloud<PointT>::Ptr obstacles(new pcl::PointCloud<PointT>);
 	
   srand(time(NULL));
-	int idx1{0}, idx2{0}, idx3{0}, maxIdx{cloud->points.size()};
+	int idx1{0}, idx2{0}, idx3{0};
+	long unsigned int maxIdx{cloud->points.size()};
 	float A{0}, B{0}, C{0}, D{0}, denom{0};
 	float x1, x2, x3, y1, y2, y3, z1, z2, z3;
 
